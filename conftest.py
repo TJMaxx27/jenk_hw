@@ -26,7 +26,7 @@ def allure_attach_screenshot_on_failed(func):
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome")
-    parser.addoption("--executor", action="store", default="172.17.0.2")
+    parser.addoption("--executor", action="store", default="localhost")
     parser.addoption("--vnc", action="store_true")
     parser.addoption("--logs", action="store_true")
     parser.addoption("--video", action="store_true")
@@ -57,7 +57,7 @@ def browser(request):
     elif browser == "firefox":
         options = FireFoxOptions()
         options.binary_location = "/usr/bin/firefox"
-        geckodriver_path = "/usr/bin/geckodriver"
+        geckodriver_path = "drivers/geckodriver"
         service = FirefoxService(executable_path=geckodriver_path)
         driver = webdriver.Firefox(service=service, options=options)
 
