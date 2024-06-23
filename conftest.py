@@ -51,7 +51,7 @@ def browser(request):
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
-        chromedriver_path = "drivers/"
+        chromedriver_path = "drivers/chromedriver"
         service = ChromeService(executable_path=chromedriver_path)
         driver = webdriver.Chrome(service=service, options=options)
     elif browser == "firefox":
