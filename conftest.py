@@ -3,15 +3,10 @@ from functools import wraps
 import allure
 import pytest
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.firefox.options import Options as FireFoxOptions
 
 logging.basicConfig(
     level=logging.ERROR, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
-
 
 def allure_attach_screenshot_on_failed(func):
     @wraps(func)
@@ -23,15 +18,13 @@ def allure_attach_screenshot_on_failed(func):
             raise e
     return wrapper
 
-
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome")
-    parser.addoption("--executor", action="store", default="localhost")
+    parser.addoption("--executor", action="store", default="http://localhost:4444/wd/hub")
     parser.addoption("--vnc", action="store_true")
     parser.addoption("--logs", action="store_true")
     parser.addoption("--video", action="store_true")
     parser.addoption("--bv", action="store", default="latest")
-
 
 @pytest.fixture()
 def browser(request):
@@ -46,20 +39,16 @@ def browser(request):
     driver = None
 
     if browser == "chrome":
-        options = ChromeOptions()
+        options = webdriver.ChromeOptions()
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
-        chromedriver_path = "drivers/chromedriver"
-        service = ChromeService(executable_path=chromedriver_path)
-        driver = webdriver.Chrome(service=service, options=options)
+        driver = webdriver.Chrome(options=options)
     elif browser == "firefox":
-        options = FireFoxOptions()
+        options = webdriver.FirefoxOptions()
         options.binary_location = "/usr/bin/firefox"
-        geckodriver_path = "drivers/geckodriver"
-        service = FirefoxService(executable_path=geckodriver_path)
-        driver = webdriver.Firefox(service=service, options=options)
+        driver = webdriver.Firefox(options=options)
 
     capabilities = {
         'browserName': browser,
